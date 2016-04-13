@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include "lightSource.h"
@@ -30,6 +31,8 @@ int numberVehicles = 0;
 int numberLights = 0;
 vector<BraitenbergVehicle*> vehicles;
 vector<lightSource*> lights;
+ifstream ifVehicle("vehicles.txt");
+ifstream ifLight("lights.txt");
 
 //structs for UI
 struct Mouse 
@@ -337,6 +340,21 @@ void TextBoxDraw(TextBox *b)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~GUI~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void addVehiclesCallback(){
 	numberVehicles++;
+	int v, s, ex, why; //vehicle, size, x, y
+	double speed1, speed2; //speed wheel 1, speed wheel 2
+	double input1, input2; //input sensor 1, input sensor 2
+	int value1, value2, value3, value4; //value k1, k2, k3, k4
+	string line;
+	getline(ifVehicle, line);
+	cout << line;
+	istringstream iss(line);
+	iss >> v >> s >> ex >> why >> speed1 >> speed2 >> input1 >> input2 >> value1 >> value2 >> value3 >> value4;
+	vehicles.push_back( new BraitenbergVehicle( v, s, {speed1,speed2}, {input1,input2}, {value1, value2, value3,value4} ) );
+	//BraitenbergVehicle temp(line);
+	//temp.printVehicle();
+	//vehicles.push_back(new BraitenbergVehicle(line));
+	//vehicles[0]->printVehicle();
+
 	cout << "Number Vehicles: " << numberVehicles << endl;
 
 }
@@ -344,6 +362,7 @@ Button addVehicles = {5,5,20,20,0,0, "+", addVehiclesCallback };
 
 void subVehiclesCallback(){
 	if (numberVehicles > 0){
+		vehicles.pop_back();
 		numberVehicles--;
 		cout << "Number Vehicles: " << numberVehicles << endl;
 	}
@@ -354,6 +373,14 @@ TextBox v = {30, 5, 60, 20, "Vehicles"};
 
 void addLightsCallback(){
 	numberLights++;
+	int id;
+	double ex, why, intense;
+	string line;
+	getline(ifLight, line);
+	cout << line;
+	istringstream iss(line);
+	iss >> id >> ex >> why >> intense;
+	lights.push_back( new lightSource(id, ex, why, intense));
 	cout << "Number Lights: " << numberLights << endl;
 }
 Button addLights = {5,35,20,20,0,0, "+", addLightsCallback };
@@ -361,6 +388,7 @@ Button addLights = {5,35,20,20,0,0, "+", addLightsCallback };
 void subLightsCallback(){
 	if(numberLights > 0){
 		numberLights--;
+		lights.pop_back();
 		cout << "Number Lights: " <<  numberLights << endl;
 	}
 }
@@ -374,6 +402,7 @@ void drawAddLight() {ButtonDraw(&addLights);}
 void drawSubLight() {ButtonDraw(&subLights);}
 void drawTBV(){TextBoxDraw(&v);}
 void drawTBL(){TextBoxDraw(&l);}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -444,6 +473,17 @@ void display(void)
 	drawAddLight();
 	drawTBV();
 	drawTBL();
+	
+	int i;
+	for(i=0; i<vehicles.size(); i++){
+		//Draw each vehicle to the screen
+		//vehicles[i].drawVehicle();
+	}
+	for(i=0; i<lights.size(); i++){
+		//Draw each vehicle to the screen
+		//lights[i].drawLight();
+	}
+
 	glFlush ();
 	glutSwapBuffers();
 }
@@ -480,19 +520,19 @@ void MouseButton(int button,int state,int x, int y)
 		 */
 		switch(button) 
 		{
-		case GLUT_LEFT_BUTTON:
-			TheMouse.lmb = 1;
-			ButtonPress(&addVehicles,x,y);
-			ButtonPress(&subVehicles,x,y);
-			ButtonPress(&addLights,x,y);
-			ButtonPress(&subLights,x,y);
-			break;
-		case GLUT_MIDDLE_BUTTON:
-			TheMouse.mmb = 1;
-			break;
-		case GLUT_RIGHT_BUTTON:
-			TheMouse.rmb = 1;
-			break;
+			case GLUT_LEFT_BUTTON:
+				TheMouse.lmb = 1;
+				ButtonPress(&addVehicles,x,y);
+				ButtonPress(&subVehicles,x,y);
+				ButtonPress(&addLights,x,y);
+				ButtonPress(&subLights,x,y);
+				break;
+			case GLUT_MIDDLE_BUTTON:
+				TheMouse.mmb = 1;
+				break;
+			case GLUT_RIGHT_BUTTON:
+				TheMouse.rmb = 1;
+				break;
 		}
 	}
 	else 
@@ -502,19 +542,19 @@ void MouseButton(int button,int state,int x, int y)
 		 */
 		switch(button) 
 		{
-		case GLUT_LEFT_BUTTON:
-			TheMouse.lmb = 0;
-			ButtonRelease(&addVehicles,x,y);
-			ButtonRelease(&subVehicles,x,y);
-			ButtonRelease(&addLights,x,y);
-			ButtonRelease(&subLights,x,y);
-			break;
-		case GLUT_MIDDLE_BUTTON:
-			TheMouse.mmb = 0;
-			break;
-		case GLUT_RIGHT_BUTTON:
-			TheMouse.rmb = 0;
-			break;
+			case GLUT_LEFT_BUTTON:
+				TheMouse.lmb = 0;
+				ButtonRelease(&addVehicles,x,y);
+				ButtonRelease(&subVehicles,x,y);
+				ButtonRelease(&addLights,x,y);
+				ButtonRelease(&subLights,x,y);
+				break;
+			case GLUT_MIDDLE_BUTTON:
+				TheMouse.mmb = 0;
+				break;
+			case GLUT_RIGHT_BUTTON:
+				TheMouse.rmb = 0;
+				break;
 		}
 	}
 

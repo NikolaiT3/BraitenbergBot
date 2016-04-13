@@ -14,7 +14,6 @@
 
 #include <GL/glut.h>
 
-
 using namespace std;
 
 //**************************************
@@ -47,7 +46,7 @@ private:
 	int y;
 	vector<double> w;			// wheels: w1, w2 -> (0,0), (0,0)
 	vector<double> s;			// sensors: s1, s2 -> (0,0), (0,0)
-	vector<vector<double>> k;		// body: k1, k2, k3, k4 -> ((0,0), (0,0), (0,0), (0,0))
+	vector<int> k;		// body: k1, k2, k3, k4 -> ((0,0), (0,0), (0,0), (0,0))
 						/*       k1---k2
 						         |     |    k1.x = x1, k1.y = 1, k3.x = x2, k3.y = y2
 						         k4---k3 */
@@ -58,9 +57,10 @@ private:
 public:
 	BraitenbergVehicle( int id = 0, int s = 2,
 						vector<double> wheel = {0,0}, vector<double> sensor = {0,0},
-						vector<vector<double> > body = {{0,0}, {0,0}, {0,0}, {0,0}},
+						vector<int> body = {0,0,0,0},
 						int startX = 100, int startY = 100)
 						: vehicle(id), size(s), w(wheel), s(sensor), k(body), x(startX), y(startY) {};
+
 
 	void printBody();
 	void printVehicle();
@@ -72,8 +72,24 @@ public:
 	void updateK();
 	void updateWfromS(double s1, double s2 );
 	void drawVehicle();
+
+	//Setting variables post declaration
+	void setID(int i){vehicle = i;}
+	void setSize(int s){size = s;}
 	void setX(int ex){x=ex;}
 	void setY(int why){y=why;}
+	void setWheelSpeed(int which, double speed){w[which] = speed;} //can pic which wheel and set speed for that wheel
+	void setSensorInput(int which, double input){s[which] = input;}
+	void setKMatrix(int k1, int value){ 
+		if(value == 1 || value == 0){
+			k[k1] = value;
+		}
+		else{
+			cout << "Error in: k[" << k1 << "] = " <<  value << " This value is not binary\n";
+			k[k1] = 0;
+		}
+	}
+
 	int getX(){return x;}
 	int getY(){return y;}
 };
@@ -90,14 +106,11 @@ void BraitenbergVehicle::printBody()
 {
 	for ( int i = 0; i < 4; ++i )
 	{
-		for ( int j = 0; j < 2; ++j )
-		{
-			cout << k[i][j] << " ";
-		}
-		cout << "\n";
+		cout << k[i] << " ";
 	}
+	cout << endl;
 }
-
+/*
 void BraitenbergVehicle::findW()
 {
 	// update body position k
@@ -115,7 +128,7 @@ void BraitenbergVehicle::findW()
 				k[i][j] = temp * s[1];
 		}
 	}
-}
+}*/
 
 void BraitenbergVehicle::scaleW()
 {
