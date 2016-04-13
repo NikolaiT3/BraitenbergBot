@@ -39,7 +39,8 @@ using namespace std;
 
 class BraitenbergVehicle
 {
-private:
+//private:
+public:
 	int vehicle;
 	int size;
 	int x;
@@ -54,7 +55,7 @@ private:
 
 							
 
-public:
+//public:
 	BraitenbergVehicle( int id = 0, int s = 2,
 						vector<double> wheel = {0,0}, vector<double> sensor = {0,0},
 						vector<int> body = {0,0,0,0},
@@ -92,6 +93,7 @@ public:
 
 	int getX(){return x;}
 	int getY(){return y;}
+	int getSize(){return size;}
 };
 
 
@@ -152,12 +154,28 @@ void BraitenbergVehicle::updateWfromS( double s1, double s2 )
 }
 
 
+void BraitenbergVehicle::drawVehicle(){
+	int x1, y1, x2, y2;
+	x1 = x;
+	y1 = y;
+	x2 = x + 2*size;
+	y2 = y + 3*size;
 
-void drawVehicle(){
-	//Start with body
 	glPushMatrix();
-	//glRectd(k[0][0], k[0][1], k[2][0], k[2][1])
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glRecti(x1, y1, x2, y2);
+		glPushMatrix();
+			glColor3f(0.0f, 1.0f, 0.0f);
+			glRecti(x1 + 5, y1, x1 + 8, y1 - 8);
+			glRecti(x1 + 12, y1, x1 + 15, y1 - 8);
+		glPopMatrix();
+		glPushMatrix();
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glRecti(x1, y2, x1 - 3, y2 - 8);
+			glRecti(x2, y2, x2 + 3, y2 - 8);
+		glPopMatrix();
 	glPopMatrix();
+	glutSwapBuffers();
 }
 
 

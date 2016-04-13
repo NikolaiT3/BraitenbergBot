@@ -336,11 +336,13 @@ void TextBoxDraw(TextBox *b)
 	}
 }
 
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~GUI~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void addVehiclesCallback(){
 	numberVehicles++;
-	int v, s, ex, why; //vehicle, size, x, y
+	/*int v, s, ex, why; //vehicle, size, x, y
 	double speed1, speed2; //speed wheel 1, speed wheel 2
 	double input1, input2; //input sensor 1, input sensor 2
 	int value1, value2, value3, value4; //value k1, k2, k3, k4
@@ -348,15 +350,9 @@ void addVehiclesCallback(){
 	getline(ifVehicle, line);
 	cout << line;
 	istringstream iss(line);
-	iss >> v >> s >> ex >> why >> speed1 >> speed2 >> input1 >> input2 >> value1 >> value2 >> value3 >> value4;
-	vehicles.push_back( new BraitenbergVehicle( v, s, {speed1,speed2}, {input1,input2}, {value1, value2, value3,value4} ) );
-	//BraitenbergVehicle temp(line);
-	//temp.printVehicle();
-	//vehicles.push_back(new BraitenbergVehicle(line));
-	//vehicles[0]->printVehicle();
-
-	cout << "Number Vehicles: " << numberVehicles << endl;
-
+	iss >> v >> s >> ex >> why >> speed1 >> speed2 >> input1 >> input2 >> value1 >> value2 >> value3 >> value4; 
+	vehicles.push_back(new BraitenbergVehicle( v, s, {speed1,speed2}, {input1,input2}, {value1, value2, value3,value4}));
+	cout << "Number Vehicles: " << numberVehicles << endl;*/
 }
 Button addVehicles = {5,5,20,20,0,0, "+", addVehiclesCallback };
 
@@ -473,19 +469,15 @@ void display(void)
 	drawAddLight();
 	drawTBV();
 	drawTBL();
-	
 	int i;
-	for(i=0; i<vehicles.size(); i++){
-		//Draw each vehicle to the screen
-		//vehicles[i].drawVehicle();
+	for(i=0; i<numberVehicles; i++){
+		vehicles[i]->drawVehicle();
+		cout << "display for\n";
+		//vehicles[i]->printVehicle();
 	}
-	for(i=0; i<lights.size(); i++){
-		//Draw each vehicle to the screen
-		//lights[i].drawLight();
-	}
-
 	glFlush ();
 	glutSwapBuffers();
+	//glutPostRedisplay();
 }
 
 void init(void)
@@ -572,15 +564,9 @@ void MouseButton(int button,int state,int x, int y)
  */
 void MouseMotion(int x, int y)
 {
-	/*
-	 *	Calculate how much the mouse actually moved
-	 */
 	int dx = x - TheMouse.x;
 	int dy = y - TheMouse.y;
 
-	/*
-	 *	update the mouse position
-	 */
 	TheMouse.x = x;
 	TheMouse.y = y;
 
@@ -637,6 +623,17 @@ void MousePassiveMotion(int x, int y)
 int main( int argc, char** argv)
 {
 
+	int v, s, ex, why; //vehicle, size, x, y
+	double speed1, speed2; //speed wheel 1, speed wheel 2
+	double input1, input2; //input sensor 1, input sensor 2
+	int value1, value2, value3, value4; //value k1, k2, k3, k4
+	string line;
+	while(getline(ifVehicle, line)){
+		cout << line << endl;
+		istringstream iss(line);
+		iss >> v >> s >> ex >> why >> speed1 >> speed2 >> input1 >> input2 >> value1 >> value2 >> value3 >> value4; 
+		vehicles.push_back(new BraitenbergVehicle( v, s, {speed1,speed2}, {input1,input2}, {value1, value2, value3,value4}));
+	}
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 	glutInitWindowSize(ImageW,ImageH);
