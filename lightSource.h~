@@ -39,3 +39,5 @@ void lightSource::printLight()
 {
 	cout << "Light: " << id << ", (" << x << "," << y << "),\t" << intensity << " Lumens.";
 }
+
+void lightSource::drawLightSource(){}

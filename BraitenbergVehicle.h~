@@ -58,7 +58,7 @@ private:
 public:
 	BraitenbergVehicle( int id = 0, int s = 2,
 						vector<double> wheel = {0,0}, vector<double> sensor = {0,0},
-						vector<vector<double> > body = {{0,0}, {0,0}, {0,0}, {0,0}},
+						vector<vector<double> > body = {{0,0}, {0,0}, {0,0}, {0,0}}
 						int startX = 100, int startY = 100)
 						: vehicle(id), size(s), w(wheel), s(sensor), k(body), x(startX), y(startY) {};
 
