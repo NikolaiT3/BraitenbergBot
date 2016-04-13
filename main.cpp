@@ -8,7 +8,8 @@
 //				  Vehicles
 //***************************************************
 
-// compile with: g++ -std=c++11 main.cpp -o out
+// compile with: g++ -std=c++11 main.cpp -o out -lGL -lGLU -lglut
+//Ignore warnings
 
 #include <iostream>
 #include <fstream>
