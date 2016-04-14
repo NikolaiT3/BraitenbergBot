@@ -121,7 +121,7 @@ def init_objects(canvas, n):
         init_bots.append(nBot)
 
     for light in init_lights:
-        canvas.create_oval( circle_coords( [float(light.x),float(light.y)], 2.), fill='yellow' )
+        canvas.create_oval( circle_coords( [float(light.x),float(light.y)], 4.), fill='yellow' )
         print "Light: "+str(light.x)+' '+str(light.y)+' '+str(light.intensity)+'\n'
 
     for bot in init_bots:
@@ -136,8 +136,8 @@ def init_objects(canvas, n):
             bot.sense(init_lights)
             bot.move()
             time.sleep(.1)
-            canvas.delete(graphic_bot)
-            canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
+            # canvas.delete(graphic_bot)
+            # canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
 
 # ===============================
 # IMPORT FILE FUNCTION
