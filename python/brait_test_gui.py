@@ -13,6 +13,9 @@ class light_source:
         self.intensity = power
 
 class brait_bot:
+    
+    speed_mult = 1.0
+
     def __init__(self, bbid, sz, x_pos, y_pos, w, s, bdy):
         self.bot_id = bbid
         self.size = sz
@@ -84,14 +87,10 @@ class brait_bot:
     def move(self):
         print str(speed_mult*5*cos( radians((self.heading+self.theta)) ))+' '+str(speed_mult*5*sin( radians((self.heading+self.theta)) ))+'\n'
 
-        self.body[0][0] = (self.body[0][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
-        self.body[0][1] = (self.body[0][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
-        self.body[1][0] = (self.body[1][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
-        self.body[1][1] = (self.body[1][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
-        self.body[2][0] = (self.body[2][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
-        self.body[2][1] = (self.body[2][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
-        self.body[3][0] = (self.body[3][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
-        self.body[3][1] = (self.body[3][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
+        for i in range(len(self.body)):
+            self.body[i][0] = (self.body[i][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
+            self.body[i][1] = (self.body[0][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
+
         self.center_x = (self.center_x + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
         self.center_y = (self.center_y + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
 
