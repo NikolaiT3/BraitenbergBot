@@ -104,6 +104,16 @@ class brait_bot:
 def circle_coords( center, radius ):
     return [center[0]-radius, center[1]-radius, center[0]+radius+1, center[1]+radius+1]
 
+def draw_bot(canvas, init_bots, init_lights, gfx_bot):
+    for i in range(len(init_bots)):
+        canvas.coords( gfx_bot[i], *circle_coords([init_bots[i].center_x,init_bots[i].center_y], 2.) )
+        init_bots[i].sense(init_lights)
+        init_bots[i].move()
+
+def update_bots(canvas, gfx_bot):
+    for i in range(len(gfx_bot)):
+        canvas.delete(gfx_bot[i])
+
 def init_objects(canvas, n):
     inputBots = inputFile("./Bots/")
     inputLights = inputFile('./Lights/')
@@ -124,20 +134,28 @@ def init_objects(canvas, n):
         canvas.create_oval( circle_coords( [float(light.x),float(light.y)], 2.), fill='yellow' )
         print "Light: "+str(light.x)+' '+str(light.y)+' '+str(light.intensity)+'\n'
 
+    gfx_bot = []
     for bot in init_bots:
         bot.setup_center()
         bot.set_heading()
         print "Bot: "+str(bot.center_x)+' '+str(bot.center_y)+'\n'+str(bot.body)+'\n'+str(bot.heading)+'\n'
+        gfx_bot.append(canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' ))
 
-
-    while( True):#pbot.center_x < 125 and pbot.center_y < 125 ):
-        for bot in init_bots:
-            graphic_bot = canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' )
-            bot.sense(init_lights)
-            bot.move()
-            time.sleep(.1)
-            canvas.delete(graphic_bot)
-            canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
+    while(True):
+        #update_bots(canvas, gfx_bot)
+        draw_bot(canvas, init_bots, init_lights, gfx_bot)
+        canvas.update_idletasks
+        time.sleep(.25)
+    
+   
+##    while( True):#pbot.center_x < 125 and pbot.center_y < 125 ):
+##        for bot in init_bots:
+##            graphic_bot = canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' )
+##            bot.sense(init_lights)
+##            bot.move()
+##            time.sleep(.1)
+##            canvas.delete(graphic_bot)
+##            canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
 
 # ===============================
 # IMPORT FILE FUNCTION
