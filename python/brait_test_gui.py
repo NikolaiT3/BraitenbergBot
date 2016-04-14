@@ -129,37 +129,15 @@ def init_objects(canvas, n):
         bot.set_heading()
         print "Bot: "+str(bot.center_x)+' '+str(bot.center_y)+'\n'+str(bot.body)+'\n'+str(bot.heading)+'\n'
 
-    # plight = light_source(1,100,100,75)
-    # plight2 = light_source(2,150,150,100)
-    # pbot = brait_bot(1,2,50,50,[0,0],[0,0],[[1,1],[1,2],[2,1],[2,2]])
-
-    # pbot.setup_center()
-    # pbot.set_heading()
-    # print "Light: "+str(plight.x)+' '+str(plight.y)+' '+str(plight.intensity)+'\n'
-    # print "Bot: "+str(pbot.center_x)+' '+str(pbot.center_y)+'\n'+str(pbot.body)+'\n'+str(pbot.heading)+'\n'
-
-    # pbot_1 = canvas.create_oval( circle_coords( [pbot.center_x,pbot.center_y], 2. ), fill='green' )
-    # plight_1 = canvas.create_oval( circle_coords( [plight.x,plight.y], 2.), fill='yellow' )
-    # plightw_1 = canvas.create_oval( circle_coords( [plight2.x,plight2.y], 2.), fill='yellow' )
-
 
     while( True):#pbot.center_x < 125 and pbot.center_y < 125 ):
         for bot in init_bots:
             graphic_bot = canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' )
             bot.sense(init_lights)
             bot.move()
+            time.sleep(.1)
             canvas.delete(graphic_bot)
             canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
-            time.sleep(.05)
-
-
-
-        # pbot.sense([plight,plight2])
-        # print "Bot: "+str(pbot.theta)+'\n'
-        # pbot.move()
-        # print "Bot: "+str(pbot.center_x)+' '+str(pbot.center_y)+'\n'+str(pbot.body)+'\n'+str(pbot.heading)+'\n'
-        # canvas.coords( pbot_1, *circle_coords([pbot.center_x,pbot.center_y], 2.) )
-        # time.sleep(.5)
 
 # ===============================
 # IMPORT FILE FUNCTION
