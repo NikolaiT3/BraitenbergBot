@@ -145,6 +145,7 @@ def init_objects(canvas, n):
 
             bot.sense(init_lights)
             bot.move()
+            canvas.delete(graphic_bot)
             canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
             time.sleep(.5)
 
