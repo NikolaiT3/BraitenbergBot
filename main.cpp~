@@ -8,12 +8,9 @@
 //				  Vehicles
 //***************************************************
 
-// compile with: g++ -std=c++11 main.cpp -o out -lGL -lGLU -lglut
-//Ignore warnings
+// compile with: g++ -std=c++11 main.cpp -o out
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <vector>
 #include "lightSource.h"
@@ -28,11 +25,9 @@ using namespace std;
 
 //Global Variables that change in GUI//
 int numberVehicles = 0;
-int numberLights = 0;
+int numberLights;
 vector<BraitenbergVehicle*> vehicles;
 vector<lightSource*> lights;
-ifstream ifVehicle("vehicles.txt");
-ifstream ifLight("lights.txt");
 
 //structs for UI
 struct Mouse 
@@ -42,15 +37,40 @@ struct Mouse
 	int lmb;	/*	is the left button pressed?		*/
 	int mmb;	/*	is the middle button pressed?	*/
 	int rmb;	/*	is the right button pressed?	*/
+
+	/*
+	 *	These two variables are a bit odd. Basically I have added these to help replicate
+	 *	the way that most user interface systems work. When a button press occurs, if no
+	 *	other button is held down then the co-ordinates of where that click occured are stored.
+	 *	If other buttons are pressed when another button is pressed it will not update these
+	 *	values. 
+	 *
+	 *	This allows us to "Set the Focus" to a specific portion of the screen. For example,
+	 *	in maya, clicking the Alt+LMB in a view allows you to move the mouse about and alter
+	 *	just that view. Essentually that viewport takes control of the mouse, therefore it is
+	 *	useful to know where the first click occured.... 
+	 */
 	int xpress; /*	stores the x-coord of when the first button press occurred	*/
 	int ypress; /*	stores the y-coord of when the first button press occurred	*/
 };
 
+/*
+ *	rename the structure from "struct Mouse" to just "Mouse"
+ */
 typedef struct Mouse Mouse;
 
+/*
+ *	Create a global mouse structure to hold the mouse information.
+ */
 Mouse TheMouse = {0,0,0,0,0};
 
+
+
 typedef void (*ButtonCallback)();
+
+/*
+ *	This is a simple structure that holds a button.
+ */
 struct Button 
 {
 	int   x;							/* top left x coord of the button */
@@ -64,17 +84,6 @@ struct Button
 };
 typedef struct Button Button;
 
-struct TextBox 
-{
-	int   x;							/* top left x coord of the button */
-	int   y;							/* top left y coord of the button */
-	int   w;							/* the width of the button */
-	int   h;							/* the height of the button */
-	char* label;
-};
-typedef struct TextBox TextBox;
-
-
 void Font(void *font,char *text,int x,int y)
 {
 	glRasterPos2i(x, y);
@@ -86,7 +95,13 @@ void Font(void *font,char *text,int x,int y)
 	}
 }
 
-
+/*----------------------------------------------------------------------------------------
+ *	\brief	This function is used to see if a mouse click or event is within a button 
+ *			client area.
+ *	\param	b	-	a pointer to the button to test
+ *	\param	x	-	the x coord to test
+ *	\param	y	-	the y-coord to test
+ */
 int ButtonClickTest(Button* b,int x,int y) 
 {
 	if( b) 
@@ -130,9 +145,12 @@ void ButtonRelease(Button *b,int x,int y)
 			 */
 			if (b->callbackFunction) {
 				b->callbackFunction();
-				b->state = 0;
 			}
 		}
+
+		/*
+		 *	Set state back to zero.
+		 */
 		b->state = 0;
 	}
 }
@@ -265,8 +283,8 @@ void ButtonDraw(Button *b)
 		/*
 		 *	Calculate the x and y coords for the text string in order to center it.
 		 */
-		fontx = b->x + (b->w-10)/2;
-		fonty = b->y + (b->h+10)/2;
+		//fontx = b->x + (b->w - glutBitmapLength(GLUT_BITMAP_HELVETICA_10,b->label))/2;
+		//fonty = b->y + (b->h+10)/2;
 
 		/*
 		 *	if the button is pressed, make it look as though the string has been pushed
@@ -293,114 +311,19 @@ void ButtonDraw(Button *b)
 	}
 }
 
-void TextBoxDraw(TextBox *b)
-{
-	int fontx;
-	int fonty;
-
-	if(b)
-	{
-		
-		glColor3f(0.7f,0.7f,0.8f);
-		
-		glBegin(GL_QUADS);
-			glVertex2i( b->x     , b->y      );
-			glVertex2i( b->x     , b->y+b->h );
-			glVertex2i( b->x+b->w, b->y+b->h );
-			glVertex2i( b->x+b->w, b->y      );
-		glEnd();
-		glLineWidth(3);
-		glColor3f(0.4f,0.4f,0.4f);
-
-		glBegin(GL_LINE_STRIP);
-			glVertex2i( b->x+b->w, b->y      );
-			glVertex2i( b->x     , b->y      );
-			glVertex2i( b->x     , b->y+b->h );
-		glEnd();
-
-		glColor3f(0.8f,0.8f,0.8f);
-
-		glBegin(GL_LINE_STRIP);
-			glVertex2i( b->x     , b->y+b->h );
-			glVertex2i( b->x+b->w, b->y+b->h );
-			glVertex2i( b->x+b->w, b->y      );
-		glEnd();
-
-		glLineWidth(1);
-
-		fontx = b->x + (b->w - 45);
-		fonty = b->y + (b->h+10)/2;
-
-		glColor3f(1,1,1);
-		Font(GLUT_BITMAP_HELVETICA_10,b->label,fontx,fonty);
-	}
-}
-
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~GUI~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void addVehiclesCallback(){
 	numberVehicles++;
-	/*int v, s, ex, why; //vehicle, size, x, y
-	double speed1, speed2; //speed wheel 1, speed wheel 2
-	double input1, input2; //input sensor 1, input sensor 2
-	int value1, value2, value3, value4; //value k1, k2, k3, k4
-	string line;
-	getline(ifVehicle, line);
-	cout << line;
-	istringstream iss(line);
-	iss >> v >> s >> ex >> why >> speed1 >> speed2 >> input1 >> input2 >> value1 >> value2 >> value3 >> value4; 
-	vehicles.push_back(new BraitenbergVehicle( v, s, {speed1,speed2}, {input1,input2}, {value1, value2, value3,value4}));
-	cout << "Number Vehicles: " << numberVehicles << endl;*/
+	cout << numberVehicles << endl;
 }
-Button addVehicles = {5,5,20,20,0,0, "+", addVehiclesCallback };
+	
 
-void subVehiclesCallback(){
-	if (numberVehicles > 0){
-		vehicles.pop_back();
-		numberVehicles--;
-		cout << "Number Vehicles: " << numberVehicles << endl;
-	}
+
+Button addVehicles = {5,5,100,25,0,0, "Add Vehicles", addVehiclesCallback };
+
+void drawGUI()
+{
+	ButtonDraw(&addVehicles);
 }
-Button subVehicles = {95,5,20,20,0,0, "-", subVehiclesCallback };
-TextBox v = {30, 5, 60, 20, "Vehicles"};
-
-
-void addLightsCallback(){
-	numberLights++;
-	int id;
-	double ex, why, intense;
-	string line;
-	getline(ifLight, line);
-	cout << line;
-	istringstream iss(line);
-	iss >> id >> ex >> why >> intense;
-	lights.push_back( new lightSource(id, ex, why, intense));
-	cout << "Number Lights: " << numberLights << endl;
-}
-Button addLights = {5,35,20,20,0,0, "+", addLightsCallback };
-
-void subLightsCallback(){
-	if(numberLights > 0){
-		numberLights--;
-		lights.pop_back();
-		cout << "Number Lights: " <<  numberLights << endl;
-	}
-}
-
-Button subLights = {95,35,20,20,0,0, "-", subLightsCallback };
-TextBox l = {30, 35, 60, 20, "Lights"};
-
-void drawAddVehicle() {ButtonDraw(&addVehicles);}
-void drawSubVehicle() {ButtonDraw(&subVehicles);}
-void drawAddLight() {ButtonDraw(&addLights);}
-void drawSubLight() {ButtonDraw(&subLights);}
-void drawTBV(){TextBoxDraw(&v);}
-void drawTBL(){TextBoxDraw(&l);}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 float framebuffer[ImageH][ImageW][3];
 
@@ -463,21 +386,19 @@ void display(void)
 {
 	// should not be necessary but some GPUs aren't displaying anything until a clear call.
 	glClear(GL_COLOR_BUFFER_BIT);
-	drawAddVehicle();
-	drawSubVehicle();
-	drawSubLight();
-	drawAddLight();
-	drawTBV();
-	drawTBL();
+
+	//The next two lines of code are for demonstration only.
+	//They show how to draw a line from (0,0) to (100,100)
 	int i;
-	for(i=0; i<numberVehicles; i++){
-		vehicles[i]->drawVehicle();
-		cout << "display for\n";
-		//vehicles[i]->printVehicle();
-	}
-	glFlush ();
-	glutSwapBuffers();
-	//glutPostRedisplay();
+	//for(i=0;i<=100;i++) setFramebuffer(i,i,1.0,1.0,1.0);
+
+	drawit();
+	//glBegin ( GL_LINES );
+	//	glVertex2f ( 200, 200 );
+	//	glVertex2f ( 400, 400 );
+	//glEnd ( );
+	drawGUI();
+	glFlush ( );
 }
 
 void init(void)
@@ -512,19 +433,15 @@ void MouseButton(int button,int state,int x, int y)
 		 */
 		switch(button) 
 		{
-			case GLUT_LEFT_BUTTON:
-				TheMouse.lmb = 1;
-				ButtonPress(&addVehicles,x,y);
-				ButtonPress(&subVehicles,x,y);
-				ButtonPress(&addLights,x,y);
-				ButtonPress(&subLights,x,y);
-				break;
-			case GLUT_MIDDLE_BUTTON:
-				TheMouse.mmb = 1;
-				break;
-			case GLUT_RIGHT_BUTTON:
-				TheMouse.rmb = 1;
-				break;
+		case GLUT_LEFT_BUTTON:
+			TheMouse.lmb = 1;
+			ButtonPress(&addVehicles,x,y);
+		case GLUT_MIDDLE_BUTTON:
+			TheMouse.mmb = 1;
+			break;
+		case GLUT_RIGHT_BUTTON:
+			TheMouse.rmb = 1;
+			break;
 		}
 	}
 	else 
@@ -534,19 +451,16 @@ void MouseButton(int button,int state,int x, int y)
 		 */
 		switch(button) 
 		{
-			case GLUT_LEFT_BUTTON:
-				TheMouse.lmb = 0;
-				ButtonRelease(&addVehicles,x,y);
-				ButtonRelease(&subVehicles,x,y);
-				ButtonRelease(&addLights,x,y);
-				ButtonRelease(&subLights,x,y);
-				break;
-			case GLUT_MIDDLE_BUTTON:
-				TheMouse.mmb = 0;
-				break;
-			case GLUT_RIGHT_BUTTON:
-				TheMouse.rmb = 0;
-				break;
+		case GLUT_LEFT_BUTTON:
+			TheMouse.lmb = 0;
+			ButtonRelease(&addVehicles,x,y);
+			break;
+		case GLUT_MIDDLE_BUTTON:
+			TheMouse.mmb = 0;
+			break;
+		case GLUT_RIGHT_BUTTON:
+			TheMouse.rmb = 0;
+			break;
 		}
 	}
 
@@ -564,9 +478,15 @@ void MouseButton(int button,int state,int x, int y)
  */
 void MouseMotion(int x, int y)
 {
+	/*
+	 *	Calculate how much the mouse actually moved
+	 */
 	int dx = x - TheMouse.x;
 	int dy = y - TheMouse.y;
 
+	/*
+	 *	update the mouse position
+	 */
 	TheMouse.x = x;
 	TheMouse.y = y;
 
@@ -575,9 +495,6 @@ void MouseMotion(int x, int y)
 	 *	Check MyButton to see if we should highlight it cos the mouse is over it
 	 */
 	ButtonPassive(&addVehicles,x,y);
-	ButtonPassive(&subVehicles,x,y);
-	ButtonPassive(&addLights,x,y);
-	ButtonPassive(&subLights,x,y);
 
 	/*
 	 *	Force a redraw of the screen
@@ -608,9 +525,6 @@ void MousePassiveMotion(int x, int y)
 	 *	Check MyButton to see if we should highlight it cos the mouse is over it
 	 */
 	ButtonPassive(&addVehicles,x,y);
-	ButtonPassive(&subVehicles,x,y);
-	ButtonPassive(&addLights,x,y);
-	ButtonPassive(&subLights,x,y);
 
 	/*
 	 *	Note that I'm not using a glutPostRedisplay() call here. The passive motion function 
@@ -620,20 +534,11 @@ void MousePassiveMotion(int x, int y)
 	 */
 }
 
+
+
 int main( int argc, char** argv)
 {
 
-	int v, s, ex, why; //vehicle, size, x, y
-	double speed1, speed2; //speed wheel 1, speed wheel 2
-	double input1, input2; //input sensor 1, input sensor 2
-	int value1, value2, value3, value4; //value k1, k2, k3, k4
-	string line;
-	while(getline(ifVehicle, line)){
-		cout << line << endl;
-		istringstream iss(line);
-		iss >> v >> s >> ex >> why >> speed1 >> speed2 >> input1 >> input2 >> value1 >> value2 >> value3 >> value4; 
-		vehicles.push_back(new BraitenbergVehicle( v, s, {speed1,speed2}, {input1,input2}, {value1, value2, value3,value4}));
-	}
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 	glutInitWindowSize(ImageW,ImageH);
@@ -649,15 +554,15 @@ int main( int argc, char** argv)
 	//int numberVehicles;
 	//int numberLights;
 
-	/*vector<double> wheel = {1,1};
+	vector<double> wheel = {1,1};
 	vector<double> sensor = {10,10};
 	vector<vector<double> > body = {{1,1}, {1,2}, {2,1}, {2,2}};
-	vector<BraitenbergVehicle*> vehicles;
-	vector<lightSource*> lights;
+	//vector<BraitenbergVehicle*> vehicles;
+	//vector<lightSource*> lights;
 
 
 	cout << "# vehicles: " << numberVehicles << endl;
-	cin >> numberVehicles;
+	//cin >> numberVehicles;
 	cout << "# lights: ";
 	cin >> numberLights;
 
@@ -678,7 +583,7 @@ int main( int argc, char** argv)
 		lights[l]->printLight();
 		cout << "\n";
 	}
-*/
+
 	// BraitenbergVehicle bob( 1, 2, wheel, sensor, body );
 
 	// bob.printBody();
