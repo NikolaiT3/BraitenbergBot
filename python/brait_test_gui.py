@@ -85,14 +85,14 @@ class brait_bot:
         del s2_list[:]
 
     def move(self):
-        print str(speed_mult*5*cos( radians((self.heading+self.theta)) ))+' '+str(speed_mult*5*sin( radians((self.heading+self.theta)) ))+'\n'
+        print str(self.speed_mult*5*cos( radians((self.heading+self.theta)) ))+' '+str(self.speed_mult*5*sin( radians((self.heading+self.theta)) ))+'\n'
 
         for i in range(len(self.body)):
-            self.body[i][0] = (self.body[i][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
-            self.body[i][1] = (self.body[0][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
+            self.body[i][0] = (self.body[i][0] + self.speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
+            self.body[i][1] = (self.body[0][1] + self.speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
 
-        self.center_x = (self.center_x + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
-        self.center_y = (self.center_y + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
+        self.center_x = (self.center_x + self.speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
+        self.center_y = (self.center_y + self.speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
 
         self.heading+=self.theta
         self.theta = 0
