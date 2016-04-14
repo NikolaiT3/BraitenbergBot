@@ -35,7 +35,7 @@ class brait_bot:
     def set_heading(self):
         dist_center_b3 = (pow((self.body[3][0]-self.center_x),2)) +\
                          (pow((self.body[3][1]-self.center_y),2))
-                          
+
         distHalf_b1_b3 = sqrt( (pow((self.body[3][0]-self.body[1][0]),2)) +\
                                (pow((self.body[3][1]-self.body[1][1]),2)) )/2.0
         phi = degrees( acos(distHalf_b1_b3/ sqrt(dist_center_b3)) )
@@ -85,9 +85,9 @@ class brait_bot:
 
         self.heading+=self.theta
         self.theta = 0
-    
+
 def circle_coords( center, radius ):
-    return [center[0]-radius, center[1]-radius, center[0]+radius+1, center[1]+radius+1]     
+    return [center[0]-radius, center[1]-radius, center[0]+radius+1, center[1]+radius+1]
 
 def init_objects(canvas, n):
     plight = light_source(1,100,100,75)
@@ -112,14 +112,20 @@ def init_objects(canvas, n):
         canvas.coords( pbot_1, *circle_coords([pbot.center_x,pbot.center_y], 2.) )
         time.sleep(.5)
 
-    
-    
-        
-
-
+# ===============================
+# IMPORT FILE FUNCTION
+# ===============================
+def inputFile(path):
+    print path
+    filename = glob.glob(path+"*.txt")
+    print filenames
+    text =[]
+    for file in filenames
+        text += open(file,'r')
+    return text
 
 #body_coords = circle_coords( [robot[0].x, robot[0].y], 5. )
-#heading_coords = [robot[0].x, robot[0].y, robot[0].x+5*cos(robot[0].orientation), robot[0].y+5*sin(robot[0].orientation)] #the '5' is the radius of the robot 
+#heading_coords = [robot[0].x, robot[0].y, robot[0].x+5*cos(robot[0].orientation), robot[0].y+5*sin(robot[0].orientation)] #the '5' is the radius of the robot
 #canvas.coords( robot[1][0], *body_coords ) #I do not understand why the * makes this work
 #canvas.coords( robot[1][1], *heading_coords ) #I do not understand why the * makes this work
 #[canvas.create_oval( body_coords, fill='' ),\
