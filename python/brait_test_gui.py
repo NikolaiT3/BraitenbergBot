@@ -125,8 +125,28 @@ def inputFile(path):
         text += open(file,'r')
     return text
 
+# ===============================
+# SANITIZE INPUT FUNCTION
+# ===============================
+def sanitize_input(text):
+    sanitized_text = []
+    for word in text:
+
+#       Get rid of punctuation, convert to lower, remove new line characters
+#       text = text.translate(None, string.punctuation).lower()
+
+        sanitize = re.sub("[^\w']|_", " ", word.lower())
+        words = list(sanitize.split())
+
+#       List of lists to keep books structure
+        sanitized_text.append(words)
+    return sanitized_text
+
+
 inputText = inputFile("./Input/")
-print inputText
+# THIS GETS ARRAY OF ARRAYS OF THE INPUT CHARACTERS
+sanitizedInput = sanitize_input(inputText)
+print sanitizedInput
 
 
 #body_coords = circle_coords( [robot[0].x, robot[0].y], 5. )
