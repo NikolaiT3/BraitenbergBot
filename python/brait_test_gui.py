@@ -57,7 +57,7 @@ class brait_bot:
         slope = (self.body[1][1] - self.body[3][1])/(self.body[1][0] - self.body[3][0])
         #doing some finalgaling here
         boundery = -slope*self.body[1][0] + self.body[3][1]
-        
+
         for light in lights:
             print str(light.y)+' '+str(light.x)+' '+str(slope)+' '+str(boundery)+' '+str(light.x*slope)+'\n'
             if light.y >= (boundery +( light.x*slope)):
