@@ -53,16 +53,26 @@ class brait_bot:
     def sense(self, lights):
         s1_list = []
         s2_list = []
+
+        slope = (self.body[1][1] - self.body[3][1])/(self.body[1][0] - self.body[3][0])
+        #doing some finalgaling here
+        boundery = -slope*self.body[1][0] + self.body[3][1]
+        
         for light in lights:
-            dist_s1_l = sqrt( (pow((self.body[1][0]-light.x),2)) +\
-                                (pow((self.body[1][1]-light.y),2)) )
-            dist_s2_l = sqrt( (pow((self.body[3][0]-light.x),2)) +\
-                                (pow((self.body[3][1]-light.y),2)) )
-            s1_list.append(light.intensity/dist_s1_l)
-            s2_list.append(light.intensity/dist_s2_l)
-            print "Bot sensors: "+str(light.intensity/dist_s1_l)+' '+str(light.intensity/dist_s2_l)+'\n'
-        print str(max(s1_list))+' '+str(max(s2_list))+'\n'
-        if fabs( max(s1_list) - max(s2_list) ) < .001:
+            print str(light.y)+' '+str(light.x)+' '+str(slope)+' '+str(boundery)+' '+str(light.x*slope)+'\n'
+            if light.y >= (boundery +( light.x*slope)):
+                dist_s1_l = sqrt( (pow((self.body[1][0]-light.x),2)) +\
+                                    (pow((self.body[1][1]-light.y),2)) )
+                dist_s2_l = sqrt( (pow((self.body[3][0]-light.x),2)) +\
+                                    (pow((self.body[3][1]-light.y),2)) )
+                s1_list.append(light.intensity/dist_s1_l)
+                s2_list.append(light.intensity/dist_s2_l)
+                print "Bot sensors: "+str(light.intensity/dist_s1_l)+' '+str(light.intensity/dist_s2_l)+'\n'
+            else:
+                print "Ignored\n"
+        #print str(max(s1_list))+' '+str(max(s2_list))+'\n'
+        if ( (len(s1_list) == 0 and len(s2_list) == 0) \
+             or fabs( max(s1_list) - max(s2_list) ) < .0001):
             self.theta = 0
         elif max(s1_list) > max(s2_list):
             self.theta += 5
@@ -72,17 +82,18 @@ class brait_bot:
         del s2_list[:]
 
     def move(self):
-        print str(5*cos( radians((self.heading+self.theta)) ))+' '+str(5*sin( radians((self.heading+self.theta)) ))+'\n'
-        self.body[0][0] += 5*cos( radians((self.heading+self.theta)) )
-        self.body[0][1] += 5*sin( radians((self.heading+self.theta)) )
-        self.body[1][0] += 5*cos( radians((self.heading+self.theta)) )
-        self.body[1][1] += 5*sin( radians((self.heading+self.theta)) )
-        self.body[2][0] += 5*cos( radians((self.heading+self.theta)) )
-        self.body[2][1] += 5*sin( radians((self.heading+self.theta)) )
-        self.body[3][0] += 5*cos( radians((self.heading+self.theta)) )
-        self.body[3][1] += 5*sin( radians((self.heading+self.theta)) )
-        self.center_x += 5*cos( radians((self.heading+self.theta)) )
-        self.center_y += 5*sin( radians((self.heading+self.theta)) )
+        print str(speed_mult*5*cos( radians((self.heading+self.theta)) ))+' '+str(speed_mult*5*sin( radians((self.heading+self.theta)) ))+'\n'
+
+        self.body[0][0] = (self.body[0][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
+        self.body[0][1] = (self.body[0][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
+        self.body[1][0] = (self.body[1][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
+        self.body[1][1] = (self.body[1][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
+        self.body[2][0] = (self.body[2][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
+        self.body[2][1] = (self.body[2][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
+        self.body[3][0] = (self.body[3][0] + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
+        self.body[3][1] = (self.body[3][1] + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
+        self.center_x = (self.center_x + speed_mult*5*cos( radians((self.heading+self.theta)) ))%800
+        self.center_y = (self.center_y + speed_mult*5*sin( radians((self.heading+self.theta)) ))%600
 
         self.heading+=self.theta
         self.theta = 0
