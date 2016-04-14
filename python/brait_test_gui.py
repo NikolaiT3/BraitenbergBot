@@ -91,27 +91,59 @@ def circle_coords( center, radius ):
     return [center[0]-radius, center[1]-radius, center[0]+radius+1, center[1]+radius+1]
 
 def init_objects(canvas, n):
-    plight = light_source(1,100,100,75)
-    plight2 = light_source(2,150,150,100)
-    pbot = brait_bot(1,2,50,50,[0,0],[0,0],[[1,1],[1,2],[2,1],[2,2]])
+    inputBots = inputFile("./Bots/")
+    inputLights = inputFile('./Lights/')
+    sanitizeBots = sanitize_input(inputBots)
+    sanitizeLights = sanitize_input(inputLights)
 
-    pbot.setup_center()
-    pbot.set_heading()
-    print "Light: "+str(plight.x)+' '+str(plight.y)+' '+str(plight.intensity)+'\n'
-    print "Bot: "+str(pbot.center_x)+' '+str(pbot.center_y)+'\n'+str(pbot.body)+'\n'+str(pbot.heading)+'\n'
+    init_lights = []
+    for lights in sanitizeLights:
+        nLight = light_source(lights[0], lights[1], lights[2], lights[3])
+        init_lights.append(nLight)
 
-    pbot_1 = canvas.create_oval( circle_coords( [pbot.center_x,pbot.center_y], 2. ), fill='green' )
-    plight_1 = canvas.create_oval( circle_coords( [plight.x,plight.y], 2.), fill='yellow' )
-    plightw_1 = canvas.create_oval( circle_coords( [plight2.x,plight2.y], 2.), fill='yellow' )
+    init_bots = []
+    for bot in sanitizeBots:
+        nBot = brait_bot(float(bot[0]),2,50,50,[float(bot[1]),float(bot[2])],[float(bot[3]),float(bot[4])],[[float(bot[5]),float(bot[6])],[float(bot[7]),float(bot[8])],[float(bot[9]),float(bot[10])],[float(bot[11]),float(bot[12])]])
+        init_bots.append(nBot)
+
+    for light in init_lights:
+        canvas.create_oval( circle_coords( [float(light.x),float(light.y)], 2.), fill='yellow' )
+        print "Light: "+str(light.x)+' '+str(light.y)+' '+str(light.intensity)+'\n'
+
+    for bot in init_bots:
+        bot.setup_center()
+        bot.set_heading()
+        canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' )
+        print "Bot: "+str(bot.center_x)+' '+str(bot.center_y)+'\n'+str(bot.body)+'\n'+str(bot.heading)+'\n'
+
+    # plight = light_source(1,100,100,75)
+    # plight2 = light_source(2,150,150,100)
+    # pbot = brait_bot(1,2,50,50,[0,0],[0,0],[[1,1],[1,2],[2,1],[2,2]])
+
+    # pbot.setup_center()
+    # pbot.set_heading()
+    # print "Light: "+str(plight.x)+' '+str(plight.y)+' '+str(plight.intensity)+'\n'
+    # print "Bot: "+str(pbot.center_x)+' '+str(pbot.center_y)+'\n'+str(pbot.body)+'\n'+str(pbot.heading)+'\n'
+
+    # pbot_1 = canvas.create_oval( circle_coords( [pbot.center_x,pbot.center_y], 2. ), fill='green' )
+    # plight_1 = canvas.create_oval( circle_coords( [plight.x,plight.y], 2.), fill='yellow' )
+    # plightw_1 = canvas.create_oval( circle_coords( [plight2.x,plight2.y], 2.), fill='yellow' )
 
 
     while( True):#pbot.center_x < 125 and pbot.center_y < 125 ):
-        pbot.sense([plight,plight2])
-        print "Bot: "+str(pbot.theta)+'\n'
-        pbot.move()
-        print "Bot: "+str(pbot.center_x)+' '+str(pbot.center_y)+'\n'+str(pbot.body)+'\n'+str(pbot.heading)+'\n'
-        canvas.coords( pbot_1, *circle_coords([pbot.center_x,pbot.center_y], 2.) )
-        time.sleep(.5)
+        for bot in init_bots:
+            bot.sense(init_lights)
+            bot.move()
+            canvas.coords( bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
+            time.sleep(.5)
+
+
+        # pbot.sense([plight,plight2])
+        # print "Bot: "+str(pbot.theta)+'\n'
+        # pbot.move()
+        # print "Bot: "+str(pbot.center_x)+' '+str(pbot.center_y)+'\n'+str(pbot.body)+'\n'+str(pbot.heading)+'\n'
+        # canvas.coords( pbot_1, *circle_coords([pbot.center_x,pbot.center_y], 2.) )
+        # time.sleep(.5)
 
 # ===============================
 # IMPORT FILE FUNCTION
@@ -140,8 +172,18 @@ def sanitize_input(text):
 
 #       List of lists to keep books structure
         sanitized_text.append(words)
+        sanitized_text = input_toNumber(sanitized_text)
     return sanitized_text
 
+def input_toNumber(text):
+    sanitized_number = []
+    for word in text:
+        temp = []
+        for number in word:
+            new = float(number)
+            temp.append(new)
+        sanitized_number.append(temp)
+    return sanitized_number
 
 inputBots = inputFile("./Bots/")
 inputLights = inputFile('./Lights/')
