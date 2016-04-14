@@ -131,7 +131,7 @@ def init_objects(canvas, n):
         init_bots.append(nBot)
 
     for light in init_lights:
-        canvas.create_oval( circle_coords( [float(light.x),float(light.y)], 2.), fill='yellow' )
+        canvas.create_oval( circle_coords( [float(light.x),float(light.y)], 4.), fill='yellow' )
         print "Light: "+str(light.x)+' '+str(light.y)+' '+str(light.intensity)+'\n'
 
     gfx_bot = []
