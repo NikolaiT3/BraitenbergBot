@@ -143,10 +143,14 @@ def sanitize_input(text):
     return sanitized_text
 
 
-inputText = inputFile("./Input/")
-# THIS GETS ARRAY OF ARRAYS OF THE INPUT CHARACTERS
-sanitizedInput = sanitize_input(inputText)
-print sanitizedInput
+inputBots = inputFile("./Bots/")
+inputLights = inputFile('./Lights/')
+sanitizeBots = sanitize_input(inputBots)
+sanitizeLights = sanitize_input(inputLights)
+# ARRAY OF BOTS
+print sanitizeBots
+# ARRAY OF LIGHTS
+print sanitizeLights
 
 
 #body_coords = circle_coords( [robot[0].x, robot[0].y], 5. )
