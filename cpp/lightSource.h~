@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include <GL/glut.h>
+
 using namespace std;
 
 class lightSource
@@ -30,9 +32,12 @@ public:
 	int getLightID() { return id; };
 	double getLightX() { return x; };
 	double getLightY() { return y; };
+	void drawLightSource();
 };
 
 void lightSource::printLight()
 {
 	cout << "Light: " << id << ", (" << x << "," << y << "),\t" << intensity << " Lumens.";
 }
+
+void lightSource::drawLightSource(){}

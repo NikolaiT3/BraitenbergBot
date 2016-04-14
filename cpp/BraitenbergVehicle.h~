@@ -12,6 +12,9 @@
 #include <string>
 #include <vector>
 
+#include <GL/glut.h>
+
+
 using namespace std;
 
 //**************************************
@@ -40,15 +43,24 @@ class BraitenbergVehicle
 private:
 	int vehicle;
 	int size;
+	int x;
+	int y;
 	vector<double> w;			// wheels: w1, w2 -> (0,0), (0,0)
 	vector<double> s;			// sensors: s1, s2 -> (0,0), (0,0)
-	vector<vector<double> > k;	// body: k1, k2, k3, k4 -> ((0,0), (0,0), (0,0), (0,0))
+	vector<vector<double>> k;		// body: k1, k2, k3, k4 -> ((0,0), (0,0), (0,0), (0,0))
+						/*       k1---k2
+						         |     |    k1.x = x1, k1.y = 1, k3.x = x2, k3.y = y2
+						         k4---k3 */
+									
+
+							
 
 public:
 	BraitenbergVehicle( int id = 0, int s = 2,
 						vector<double> wheel = {0,0}, vector<double> sensor = {0,0},
-						vector<vector<double> > body = {{0,0}, {0,0}, {0,0}, {0,0}} )
-						: vehicle(id), size(s), w(wheel), s(sensor), k(body) {};
+						vector<vector<double> > body = {{0,0}, {0,0}, {0,0}, {0,0}}
+						int startX = 100, int startY = 100)
+						: vehicle(id), size(s), w(wheel), s(sensor), k(body), x(startX), y(startY) {};
 
 	void printBody();
 	void printVehicle();
@@ -59,7 +71,13 @@ public:
 	void scaleW();
 	void updateK();
 	void updateWfromS(double s1, double s2 );
+	void drawVehicle();
+	void setX(int ex){x=ex;}
+	void setY(int why){y=why;}
+	int getX(){return x;}
+	int getY(){return y;}
 };
+
 
 void BraitenbergVehicle::printVehicle()
 {
@@ -119,3 +137,18 @@ void BraitenbergVehicle::updateWfromS( double s1, double s2 )
 	s[1] = s2;
 	scaleW();
 }
+
+
+
+void drawVehicle(){
+	//Start with body
+	glPushMatrix();
+	//glRectd(k[0][0], k[0][1], k[2][0], k[2][1])
+	glPopMatrix();
+}
+
+
+
+
+
+
