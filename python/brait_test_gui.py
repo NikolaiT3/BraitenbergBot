@@ -14,7 +14,11 @@ class light_source:
 
 class brait_bot:
 
-    speed_mult = 1.0
+    if len(sys.argv) > 1:
+        speed_mult = float(sys.argv[1])
+        print speed_mult
+    else:
+        speed_mult = 1.0
 
     def __init__(self, bbid, sz, x_pos, y_pos, w, s, bdy):
         self.bot_id = bbid
@@ -142,11 +146,11 @@ def init_objects(canvas, n):
     while( True):#pbot.center_x < 125 and pbot.center_y < 125 ):
         for bot in init_bots:
             graphic_bot = canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' )
-
             bot.sense(init_lights)
             bot.move()
             canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
-            time.sleep(.5)
+            time.sleep(.05)
+
 
 
         # pbot.sense([plight,plight2])
