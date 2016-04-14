@@ -3,6 +3,7 @@ from math import *
 import thread
 import random
 import time
+import glob
 
 class light_source:
     def __init__(self, lid=0, x_pos=0, y_pos=0, power=0):
@@ -117,13 +118,15 @@ def init_objects(canvas, n):
 # ===============================
 def inputFile(path):
     print path
-    filename = glob.glob(path+"*.txt")
+    filenames = glob.glob(path+"*.txt")
     print filenames
     text =[]
-    for file in filenames
+    for file in filenames:
         text += open(file,'r')
     return text
 
+inputText = inputFile("./Input/")
+print inputText
 #body_coords = circle_coords( [robot[0].x, robot[0].y], 5. )
 #heading_coords = [robot[0].x, robot[0].y, robot[0].x+5*cos(robot[0].orientation), robot[0].y+5*sin(robot[0].orientation)] #the '5' is the radius of the robot
 #canvas.coords( robot[1][0], *body_coords ) #I do not understand why the * makes this work
