@@ -123,7 +123,6 @@ def init_objects(canvas, n):
     for bot in init_bots:
         bot.setup_center()
         bot.set_heading()
-        canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' )
         print "Bot: "+str(bot.center_x)+' '+str(bot.center_y)+'\n'+str(bot.body)+'\n'+str(bot.heading)+'\n'
 
     # plight = light_source(1,100,100,75)
@@ -142,9 +141,11 @@ def init_objects(canvas, n):
 
     while( True):#pbot.center_x < 125 and pbot.center_y < 125 ):
         for bot in init_bots:
+            graphic_bot = canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' )
+
             bot.sense(init_lights)
             bot.move()
-            canvas.coords( bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
+            canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
             time.sleep(.5)
 
 
