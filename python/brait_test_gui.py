@@ -13,7 +13,7 @@ class light_source:
         self.intensity = power
 
 class brait_bot:
-    
+
     speed_mult = 1.0
 
     def __init__(self, bbid, sz, x_pos, y_pos, w, s, bdy):
