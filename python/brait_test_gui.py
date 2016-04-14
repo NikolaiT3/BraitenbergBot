@@ -148,6 +148,7 @@ def init_objects(canvas, n):
             graphic_bot = canvas.create_oval( circle_coords( [float(bot.center_x),float(bot.center_y)], 2. ), fill='green' )
             bot.sense(init_lights)
             bot.move()
+            canvas.delete(graphic_bot)
             canvas.coords( graphic_bot, *circle_coords([bot.center_x,bot.center_y], 2.) )
             time.sleep(.05)
 
